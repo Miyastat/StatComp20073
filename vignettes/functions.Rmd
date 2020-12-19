@@ -1,0 +1,44 @@
+---
+title: "functions"
+author: "20073"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{functions}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## function1
+
+estimating interval of population variance using chi-square statistics
+
+```{r}
+chisq.var.test <- function(x, alpha){
+  options(digits = 4)
+  result <- list()
+  n <- length(x)
+  v <- var(x)
+  result$conf.int.var <- c(
+    (n-1)*v/qchisq(alpha/2, df = n-1, lower.tail = F),
+    (n-1)*v/qchisq(alpha/2, df = n-1, lower.tail = T)
+  )
+  result$conf.int.se <- sqrt(result$conf.int.var)
+  result
+}
+```
+
+## function2
+
+quantile calculating
+
+```{r}
+cal.quant <- function(x){
+  x <- sort(x)
+  n <- length(x)
+  n4 <- floor((n+3)/2)/2
+  d <- c(1,n4,(n+1)/2,n+1-n4,n)
+  return(0.5*(x[floor(d)]+x[ceiling(d)]))
+}
+```
+
