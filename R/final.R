@@ -3,7 +3,7 @@
 #' @param n the number of samples.
 #' @param alpha significance level.
 #' @return confidence border
-#' @importFrom stats rlnorm sd qt rt cor runif rnorm dnorm cov var qnorm pnorm quantile
+#' @importFrom stats rlnorm sd qt qchisq rchisq rt cor runif rnorm dnorm cov var qnorm pnorm quantile
 #' @importFrom Rcpp evalCpp
 #' @useDynLib StatComp20073
 #' @examples

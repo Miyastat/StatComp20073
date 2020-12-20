@@ -1124,8 +1124,6 @@ nlapply(xs,ws,weighted.mean, numeric(1))
 ```{r}
 library(StatComp20073)
 library(Rcpp)
-dir_cpp <- '../src/'
-sourceCpp(paste0(dir_cpp,"MetropolisC.cpp")) 
 n <- 4 #degrees of freedom for target Student t dist.
 N <- 2000
 sigma <- 2

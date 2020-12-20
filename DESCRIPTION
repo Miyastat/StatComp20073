@@ -5,7 +5,7 @@ Version: 0.1.0
 Author: 20073
 Maintainer: 20073 <zhangyuting@mail.ustc.edu.cn>
 Description: all functions for my homework and two exceptional functions. 
-License: GPL (>= 2)
+License: GPL 
 Imports: Rcpp, knitr, rmarkdown, boot, energy, Ball, RANN, microbenchmark, DAAG, MASS, ggplot2, lattice, bootstrap
 LinkingTo: Rcpp
 RoxygenNote: 7.1.1

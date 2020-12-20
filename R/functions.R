@@ -1,45 +1,30 @@
-
-#' @title chisquqre-estimating interval of population variance.
-#' @description estimating interval of population variance using chi-square statistics.
-#' @param x the sample
-#' @param alpha the significance level
-#' @return interval estimation of population variance
-#' @importFrom stats qchisq
+#' @title Rayleigh sampler
+#' @description Rayleigh sampler using acceptance-rejection method
+#' @param n size of the random number
+#' @param sigma parameter of rayleigh density
+#' @return Rayleigh random number and iteration times
 #' @examples
 #' \dontrun{
-#' set.seed(123)
-#' x <- rnorm(100, 1, 2)
-#' chisq.var.test(x, 0.05)
+#' n <- 1000
+#' sigma <- 1
+#' x <- Rayleigh(n, sigma)
 #' }
 #' @export
-chisq.var.test <- function(x, alpha){
-  options(digits = 4)
+RayleighR <- function(n, sigma){
+  k <- 0
+  j <- 0
   result <- list()
-  n <- length(x)
-  v <- var(x)
-  result$conf.int.var <- c(
-    (n-1)*v/qchisq(alpha/2, df = n-1, lower.tail = F),
-    (n-1)*v/qchisq(alpha/2, df = n-1, lower.tail = T)
-  )
-  result$conf.int.se <- sqrt(result$conf.int.var)
+  y <- numeric(n)
+  while (k < n) {
+    u <- runif(1)
+    j <- j + 1
+    x <- rchisq(1,4)
+    if (exp(-x^2/(2*sigma^2)+x/2-sigma^2/8) > u) {
+      k <- k + 1
+      y[k] <- x
+    }
+  }
+  result$rd <- y
+  result$it <- j
   result
-}
-
-#' @title quantile.
-#' @description calculate max, min, median, upper and lower quartile.
-#' @param x the sample
-#' @return max, min, median, upper and lower quartile
-#' @examples
-#' \dontrun{
-#' set.seed(123)
-#' x <- rnorm(100, 1, 2)
-#' my.fivenum(x)
-#' }
-#' @export
-cal.quant <- function(x){
-  x <- sort(x)
-  n <- length(x)
-  n4 <- floor((n+3)/2)/2
-  d <- c(1,n4,(n+1)/2,n+1-n4,n)
-  return(0.5*(x[floor(d)]+x[ceiling(d)]))
 }

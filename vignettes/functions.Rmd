@@ -1,6 +1,6 @@
 ---
 title: "functions"
-author: "20073"
+author: "Vignette Author"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -11,34 +11,84 @@ vignette: >
 
 ## function1
 
-estimating interval of population variance using chi-square statistics
+a Rayleigh sampler with acceptance-rejection method using R. The Rayleigh density is
+$$
+f(x)=\frac{x}{\sigma^{2}} e^{-x^{2} /\left(2 \sigma^{2}\right)}, \quad x \geq 0, \sigma>0
+$$
+Let g(x) be the chisquare(4) density, we can easily get c = $\frac{4}{\sigma^{2}} e^{\sigma^{2}/8}$.
+On average, $cn$ iterations will be required for a sample size $n$.
 
 ```{r}
-chisq.var.test <- function(x, alpha){
-  options(digits = 4)
+library(Rcpp)
+library(StatComp20073)
+```
+
+
+```{r eval=FALSE}
+RayleighR <- function(n, sigma){
+  k <- 0 
+  j <- 0 
   result <- list()
-  n <- length(x)
-  v <- var(x)
-  result$conf.int.var <- c(
-    (n-1)*v/qchisq(alpha/2, df = n-1, lower.tail = F),
-    (n-1)*v/qchisq(alpha/2, df = n-1, lower.tail = T)
-  )
-  result$conf.int.se <- sqrt(result$conf.int.var)
+  y <- numeric(n)
+  while (k < n) {
+    u <- runif(1)
+    j <- j + 1
+    x <- rchisq(1,4) 
+    if (exp(-x^2/(2*sigma^2)+x/2-sigma^2/8) > u) {
+      k <- k + 1
+      y[k] <- x
+    }
+  }
+  result$rd <- y
+  result$it <- j
   result
 }
 ```
 
-## function2
-
-quantile calculating
+for example, if we want to generate a Rayleigh(sigma = 2) random number of size $n=1000$, we need to iterate nearly 1649 times:
 
 ```{r}
-cal.quant <- function(x){
-  x <- sort(x)
-  n <- length(x)
-  n4 <- floor((n+3)/2)/2
-  d <- c(1,n4,(n+1)/2,n+1-n4,n)
-  return(0.5*(x[floor(d)]+x[ceiling(d)]))
+n <- 1000
+sigma <- 2
+set.seed(345)
+y <- RayleighR(n, sigma)
+print(y$it)
+```
+
+## function2
+
+a Rayleigh sampler with acceptance-rejection method using Rcpp.
+
+```{r eval=FALSE}
+#include <Rcpp.h>
+using namespace Rcpp;
+// [[Rcpp::export]]
+NumericVector RayleighC(int n, double sigma) {
+  NumericVector y(n);
+  int k = 0,j = 0;
+  double u=0, x=0;
+  while (k < n) {
+    u = runif(1)[0];
+    j = j + 1;
+    x = rchisq(1,4)[0];
+    if (exp(-pow(x,2)/(2*pow(sigma,2))+x/2-pow(sigma,2)/8) > u) {
+      k++;
+      y[k] = x;
+    }
+  }
+  return y;
 }
 ```
+
+```{r}
+RR <- RayleighR(n,sigma)$rd
+RC <- RayleighC(n,sigma)
+qqplot(RR,RC)
+abline(a=0,b=1,col='black')
+```
+
+
+
+
+
 

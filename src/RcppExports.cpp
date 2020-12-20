@@ -18,9 +18,22 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// RayleighC
+NumericVector RayleighC(int n, double sigma);
+RcppExport SEXP _StatComp20073_RayleighC(SEXP nSEXP, SEXP sigmaSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< int >::type n(nSEXP);
+    Rcpp::traits::input_parameter< double >::type sigma(sigmaSEXP);
+    rcpp_result_gen = Rcpp::wrap(RayleighC(n, sigma));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_StatComp20073_MetropolisC", (DL_FUNC) &_StatComp20073_MetropolisC, 3},
+    {"_StatComp20073_RayleighC", (DL_FUNC) &_StatComp20073_RayleighC, 2},
     {NULL, NULL, 0}
 };
 
